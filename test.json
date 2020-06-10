@@ -1,1 +1,32 @@
-[{"name":"trung","age":21,"email":"trung@mail.com"},{"name":"","age":25,"email":"dat@mail.com"},{"name":"tung","age":0,"email":"tung@mail.com"},{"name":"","age":0,"email":""},{"name":"cuong","age":25,"email":""}]
+[
+  {
+    "name": "trung",
+    "age": 21,
+    "email": "trung@mail.com",
+    "gender": true
+  },
+  {
+    "name": "",
+    "age": 25,
+    "email": "dat@mail.com",
+    "gender": false
+  },
+  {
+    "name": "tung",
+    "age": 0,
+    "email": "tung@mail.com",
+    "gender": false
+  },
+  {
+    "name": "",
+    "age": 0,
+    "email": "",
+    "gender": false
+  },
+  {
+    "name": "cuong",
+    "age": 25,
+    "email": "",
+    "gender": true
+  }
+]

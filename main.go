@@ -10,15 +10,12 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"./data"
 )
 
-type Data struct {
-	Firstseen	string	`json:"firstseen"`
-	DstIP		string	`json:"dstip"`
-	DstPort		int		`json:"dstport"`
-	LastOnline	string	`json:"lastonline"`
-	Malware		string	`json:"malware"`
-}
+// type Data data.IPBlockList
+type Data data.User
 
 func check(err error) {
 	if err != nil {
@@ -31,25 +28,36 @@ func parse(tmp []string) Data {
 	for i, d := range tmp {
 		f := reflect.ValueOf(&res).Elem().Field(i)
 		if f.CanSet() {
-			if f.Type().Name() == "string" {
-				f.SetString(d)
+			switch f.Type().Name() {
+				case "string": {
+					f.SetString(d)
+				}
+				case "int": {
+					if d == "" {
+						d = "0"
+					}	
+					n, err := strconv.ParseInt(d, 10, 64)
+					check(err)
+					f.SetInt(n)
+				}
+				case "float": {
+					if d == "" {
+						d = "0"
+					}
+					n, err := strconv.ParseFloat(d, 64)
+					check(err)
+					f.SetFloat(n)
+				}
+				case "bool": {
+					if d == "" {
+						d = "false"
+					}
+					b, err := strconv.ParseBool(d)
+					check(err)
+					f.SetBool(b)
+				}
+				// ... them 1 dong thu
 			}
-			if f.Type().Name() == "int" {
-				n, err := strconv.ParseInt(d, 10, 64)
-				check(err)
-				f.SetInt(n)
-			}
-			if f.Type().Name() == "float" {
-				n, err := strconv.ParseFloat(d, 64)
-				check(err)
-				f.SetFloat(n)
-			}
-			if f.Type().Name() == "bool" {
-				b, err := strconv.ParseBool(d)
-				check(err)
-				f.SetBool(b)
-			}
-			// ... them 1 dong thu
 		}
 	}
 
@@ -95,10 +103,10 @@ func Save2File(filename string, rawData []Data) {
 }
 
 func main() {
-	filename := "test2.csv"
+	filename := "test.csv"
 	t := time.Now().UnixNano()
 	res := Csv2Json(filename)
-	Save2File("test2.json", res)
+	Save2File("test.json", res)
 	t = time.Now().UnixNano() - t
 	fmt.Println(t / 1000)
 }
