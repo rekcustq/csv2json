@@ -7,13 +7,14 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
 type Data struct {
 	Time string `json:"time"`
 	IP   string `json:"ip"`
-	Port string `json:"port"`
+	Port int	 `json:"port"`
 	Date string `json:"date"`
 	Name string `json:"name"`
 }
@@ -29,7 +30,14 @@ func parse(tmp []string) Data {
 	for i, d := range tmp {
 		f := reflect.ValueOf(&res).Elem().Field(i)
 		if f.CanSet() {
-			f.SetString(d)
+			if f.Type().Name() == "int" {
+				n, err := strconv.Atoi(d)
+				check(err)
+				f.SetInt(int64(n))
+			}
+			if f.Type().Name() == "string" {
+				f.SetString(d)
+			}
 		}
 	}
 
