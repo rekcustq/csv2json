@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"reflect"
 	"strings"
 )
 
@@ -21,6 +22,15 @@ func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func parse(tmp []string) Data {
+	var res Data
+	for i, d := range tmp {
+		reflect.ValueOf(&res).Elem().Field(i).SetString(d)
+	}
+
+	return res
 }
 
 func Csv2Json(filename string) []Data {
@@ -40,11 +50,7 @@ func Csv2Json(filename string) []Data {
 		if len(tmp) < 1 {
 			panic("empty line")
 		} else {
-			rawData.Time = tmp[0]
-			rawData.IP = tmp[1]
-			rawData.Port = tmp[2]
-			rawData.Date = tmp[3]
-			rawData.Name = tmp[4]
+			rawData = parse(tmp)
 		}
 		data = append(data, rawData)
 	}
