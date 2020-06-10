@@ -27,7 +27,10 @@ func check(err error) {
 func parse(tmp []string) Data {
 	var res Data
 	for i, d := range tmp {
-		reflect.ValueOf(&res).Elem().Field(i).SetString(d)
+		f := reflect.ValueOf(&res).Elem().Field(i)
+		if f.CanSet() {
+			f.SetString(d)
+		}
 	}
 
 	return res
