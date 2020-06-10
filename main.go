@@ -9,14 +9,15 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Data struct {
-	Time string `json:"time"`
-	IP   string `json:"ip"`
-	Port int	 `json:"port"`
-	Date string `json:"date"`
-	Name string `json:"name"`
+	Firstseen	string	`json:"firstseen"`
+	DstIP		string	`json:"dstip"`
+	DstPort		int		`json:"dstport"`
+	LastOnline	string	`json:"lastonline"`
+	Malware		string	`json:"malware"`
 }
 
 func check(err error) {
@@ -84,7 +85,9 @@ func Save2File(filename string, rawData []Data) {
 
 func main() {
 	filename := "test2.csv"
+	t := time.Now().UnixNano()
 	res := Csv2Json(filename)
 	Save2File("test2.json", res)
-	// fmt.Println(res)
+	t = time.Now().UnixNano() - t
+	fmt.Println(t / 1000)
 }
