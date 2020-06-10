@@ -28,6 +28,7 @@ func parse(tmp []string) Data {
 	for i, d := range tmp {
 		f := reflect.ValueOf(&res).Elem().Field(i)
 		if f.CanSet() {
+			// Set corresponding field type
 			switch f.Type().Name() {
 				case "string": {
 					f.SetString(d)
@@ -72,17 +73,19 @@ func Csv2Json(filename string) []Data {
 	r := bufio.NewReader(f)
 	var data []Data
 	for line, _, err := r.ReadLine(); err != io.EOF; line, _, err = r.ReadLine() {
+		// Check comment
 		if string(line[0]) == "#" {
 			continue
 		}
+
 		var rawData Data
 		tmp := strings.Split(string(line), ",")
-		// fmt.Println(len(tmp), tmp)
 		if len(tmp) < 1 {
-			panic("empty line")
+			panic("Empty line")
 		} else {
 			rawData = parse(tmp)
 		}
+
 		data = append(data, rawData)
 	}
 
@@ -92,21 +95,27 @@ func Csv2Json(filename string) []Data {
 func Save2File(filename string, rawData []Data) {
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
 	check(err)
+	// Empty file
 	err = os.Truncate(filename, 0)
 	check(err)
 	defer f.Close()
 
+	// Convert []Data struct to Json
 	js, err := json.MarshalIndent(rawData, "", "  ")
 	// js, err := json.Marshal(rawData)
 	check(err)
+
+	// Write to file
 	fmt.Fprintln(f, string(js))
 }
 
 func main() {
 	filename := "test.csv"
+
 	t := time.Now().UnixNano()
 	res := Csv2Json(filename)
 	Save2File("test.json", res)
 	t = time.Now().UnixNano() - t
+	
 	fmt.Println(t / 1000)
 }
