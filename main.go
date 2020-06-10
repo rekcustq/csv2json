@@ -31,14 +31,25 @@ func parse(tmp []string) Data {
 	for i, d := range tmp {
 		f := reflect.ValueOf(&res).Elem().Field(i)
 		if f.CanSet() {
-			if f.Type().Name() == "int" {
-				n, err := strconv.Atoi(d)
-				check(err)
-				f.SetInt(int64(n))
-			}
 			if f.Type().Name() == "string" {
 				f.SetString(d)
 			}
+			if f.Type().Name() == "int" {
+				n, err := strconv.ParseInt(d, 10, 64)
+				check(err)
+				f.SetInt(n)
+			}
+			if f.Type().Name() == "float" {
+				n, err := strconv.ParseFloat(d, 64)
+				check(err)
+				f.SetFloat(n)
+			}
+			if f.Type().Name() == "bool" {
+				b, err := strconv.ParseBool(d)
+				check(err)
+				f.SetBool(b)
+			}
+			// ... them 1 dong thu
 		}
 	}
 
