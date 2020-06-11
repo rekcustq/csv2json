@@ -3,19 +3,21 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
 
-	"./data"
+	"github.com/rekcusTQ/csv2json/data"
 )
 
 // type Data data.IPBlockList
-type Data data.User
+type Data data.Users
 
 func check(err error) {
 	if err != nil {
@@ -25,35 +27,35 @@ func check(err error) {
 
 func parse(tmp []string) Data {
 	var res Data
-	for i, d := range tmp {
+	for i, val := range tmp {
 		f := reflect.ValueOf(&res).Elem().Field(i)
 		if f.CanSet() {
 			// Set corresponding field type
-			switch f.Type().Name() {
-				case "string": {
-					f.SetString(d)
+			switch f.Kind() {
+				case reflect.String: {
+					f.SetString(val)
 				}
-				case "int": {
-					if d == "" {
-						d = "0"
+				case reflect.Int: {
+					if val == "" {
+						val = "0"
 					}	
-					n, err := strconv.ParseInt(d, 10, 64)
+					n, err := strconv.ParseInt(val, 10, 64)
 					check(err)
 					f.SetInt(n)
 				}
-				case "float": {
-					if d == "" {
-						d = "0"
+				case reflect.Float64: {
+					if val == "" {
+						val = "0"
 					}
-					n, err := strconv.ParseFloat(d, 64)
+					n, err := strconv.ParseFloat(val, 64)
 					check(err)
 					f.SetFloat(n)
 				}
-				case "bool": {
-					if d == "" {
-						d = "false"
+				case reflect.Bool: {
+					if val == "" {
+						val = "false"
 					}
-					b, err := strconv.ParseBool(d)
+					b, err := strconv.ParseBool(val)
 					check(err)
 					f.SetBool(b)
 				}
@@ -92,6 +94,24 @@ func Csv2Json(filename string) []Data {
 	return data
 }
 
+func Xml2Json(filename string) []Data {
+	f, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0644)
+	check(err)
+	defer f.Close()
+
+	d, err := ioutil.ReadAll(f)
+	check(err)
+
+	var data []Data
+	err = xml.Unmarshal(d, &data)
+	check(err)
+
+	tmp, err := json.MarshalIndent(data, "", "  ")
+	fmt.Println(string(tmp))
+
+	return data
+}
+
 func Save2File(filename string, rawData []Data) {
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
 	check(err)
@@ -110,10 +130,11 @@ func Save2File(filename string, rawData []Data) {
 }
 
 func main() {
-	filename := "test.csv"
+	filename := "test.xml"
 
 	t := time.Now().UnixNano()
-	res := Csv2Json(filename)
+	// res := Csv2Json(filename)
+	res := Xml2Json(filename)
 	Save2File("test.json", res)
 	t = time.Now().UnixNano() - t
 	

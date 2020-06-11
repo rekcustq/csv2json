@@ -1,0 +1,15 @@
+<Users>
+    <User>
+        <Name>trung</Name>
+        <Age>21</Age>
+        <Email>trung@mail.com</Email>
+        <Gender>true</Gender>
+        <Test>1.4</Test>
+    </User>
+    <User>
+        <Name></Name>
+        <Age>25</Age>
+        <Email>dat@mail.com</Email>
+        <Test>6</Test>
+    </User>
+</Users>

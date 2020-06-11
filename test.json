@@ -1,32 +1,20 @@
 [
   {
-    "name": "trung",
-    "age": 21,
-    "email": "trung@mail.com",
-    "gender": true
-  },
-  {
-    "name": "",
-    "age": 25,
-    "email": "dat@mail.com",
-    "gender": false
-  },
-  {
-    "name": "tung",
-    "age": 0,
-    "email": "tung@mail.com",
-    "gender": false
-  },
-  {
-    "name": "",
-    "age": 0,
-    "email": "",
-    "gender": false
-  },
-  {
-    "name": "cuong",
-    "age": 25,
-    "email": "",
-    "gender": true
+    "Users": [
+      {
+        "name": "trung",
+        "age": 21,
+        "email": "trung@mail.com",
+        "gender": true,
+        "test": 1.4
+      },
+      {
+        "name": "",
+        "age": 25,
+        "email": "dat@mail.com",
+        "gender": false,
+        "test": 6
+      }
+    ]
   }
 ]
